@@ -16,14 +16,14 @@ use scraper::{
 };
 
 pub fn get_input(day: i32) -> Option<Vec<String>> {
-    if fs::exists(get_path(day)).is_err() {
+    if !fs::exists(get_path(day)).expect("FS corrupted") {
         get_input_data(day)?;
     }
     Some(lines_from_file(get_path(day)))
 }
 
 pub fn get_example_input(day: i32, num: i32) -> Option<Vec<String>> {
-    if fs::exists(get_example_path(day, num)).is_err() {
+    if !fs::exists(get_example_path(day, num)).expect("FS corrupted") {
         get_example_data(day, num)?;
     }
     Some(lines_from_file(get_example_path(day, num)))
