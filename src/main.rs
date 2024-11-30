@@ -1,5 +1,6 @@
 
 pub mod helper;
+pub mod y2024;
 
 use helper::{
     get_input,
@@ -7,9 +8,9 @@ use helper::{
 };
 use argparse::{ArgumentParser, StoreTrue, Store};
 
-fn run(which: i32, input: Vec<String>) {
+fn run(which: i32, input: Vec<String>) -> (i64, i64) {
     match which {
-        1 => todo!(),
+        1 => y2024::day01::run(input),
         2 => todo!(),
         3 => todo!(),
         4 => todo!(),
@@ -34,7 +35,7 @@ fn run(which: i32, input: Vec<String>) {
         23 => todo!(),
         24 => todo!(),
         25 => todo!(),
-        _ => println!("How many days you think it has?")
+        _ => (0, 0)
     }
 }
 

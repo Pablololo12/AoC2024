@@ -71,7 +71,11 @@ fn get_example_data(day: i32, num: i32) -> Option<()> {
     for element in fragment.select(&pre_selector) {
         for e in element.select(&code_selector) {
             if i==num {
-                fs::write(get_example_path(day, num), e.inner_html()).ok()?;
+                let inner = e.inner_html()
+                    .replace("&gt;", ">")
+                    .replace("&lt;", "<")
+                    .replace("&amp;", "&");
+                fs::write(get_example_path(day, num), inner).ok()?;
                 return Some(())
             }
             i+=1;
