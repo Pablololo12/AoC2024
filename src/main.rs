@@ -3,8 +3,10 @@ pub mod y2024;
 
 use argparse::{ArgumentParser, Store, StoreTrue};
 use helper::{get_example_input, get_input};
+use std::time::Instant;
 
 fn run(which: i32, input: Vec<String>) -> (i64, i64) {
+    let now = Instant::now();
     let (first, second) = match which {
         1 => y2024::day01::run(input),
         2 => todo!(),
@@ -33,9 +35,10 @@ fn run(which: i32, input: Vec<String>) -> (i64, i64) {
         25 => todo!(),
         _ => (0, 0),
     };
+    let elapsed = now.elapsed();
     println!(
-        "Day {} first solution: {}, second solution {}",
-        which, first, second
+        "Day {} first solution: {}, second solution {} in {:.2?}",
+        which, first, second, elapsed
     );
     (first, second)
 }
