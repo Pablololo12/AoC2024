@@ -29,7 +29,5 @@ pub fn part2(inp: &Vec<String>) -> i64 {
 }
 
 pub fn run(inp: Vec<String>) -> (i64, i64) {
-    println!("Hi! I'm Day01");
-
     (part1(&inp), part2(&inp))
 }

@@ -9,7 +9,7 @@ fn run(which: i32, input: Vec<String>) -> (i64, i64) {
     let now = Instant::now();
     let (first, second) = match which {
         1 => y2024::day01::run(input),
-        2 => todo!(),
+        2 => y2024::day02::run(input),
         3 => todo!(),
         4 => todo!(),
         5 => todo!(),
