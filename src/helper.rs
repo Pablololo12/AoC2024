@@ -1,18 +1,10 @@
+use reqwest::{blocking::Client, cookie::Jar, Url};
+use scraper::{Html, Selector};
 use std::{
+    env, fs,
     fs::File,
-    io::{prelude::*, BufReader, stdin, stdout},
+    io::{prelude::*, stdin, stdout, BufReader},
     path::Path,
-    env,
-    fs,
-};
-use reqwest::{
-    cookie::Jar,
-    Url,
-    blocking::Client
-};
-use scraper::{
-    Html,
-    Selector,
 };
 
 pub fn get_input(day: i32) -> Option<Vec<String>> {
@@ -42,7 +34,10 @@ fn get_cookie() -> String {
         return env::var("AOC_COOKIE").expect("This should not happen");
     }
     if fs::exists("./.cookie").expect("FS corrupted") {
-        return lines_from_file("./.cookie").first().expect("LLL").to_owned();
+        return lines_from_file("./.cookie")
+            .first()
+            .expect("LLL")
+            .to_owned();
     }
 
     println!("Enter aoc cookie: ");
@@ -54,7 +49,7 @@ fn get_cookie() -> String {
 }
 
 fn get_internet_data(addr: String) -> Option<String> {
-    let cookie = get_cookie();
+    let cookie = format!("session={}", get_cookie());
     let url = "https://adventofcode.com".parse::<Url>().unwrap();
 
     let jar = Jar::default();
@@ -64,15 +59,11 @@ fn get_internet_data(addr: String) -> Option<String> {
         .cookie_provider(jar.into())
         .build()
         .expect("No cookies");
-    client.get(addr)
-        .send()
-        .ok()?
-        .text()
-        .ok()
+    client.get(addr).send().ok()?.text().ok()
 }
 
 fn get_example_data(day: i32, num: i32) -> Option<()> {
-    let res = get_internet_data(format!("https://adventofcode.com/2023/day/{day}"))?;
+    let res = get_internet_data(format!("https://adventofcode.com/2024/day/{day}"))?;
     let fragment = Html::parse_fragment(&res);
     let pre_selector = Selector::parse("pre").unwrap();
     let code_selector = Selector::parse("code").unwrap();
@@ -80,26 +71,26 @@ fn get_example_data(day: i32, num: i32) -> Option<()> {
     let mut i = 1;
     for element in fragment.select(&pre_selector) {
         for e in element.select(&code_selector) {
-            if i==num {
-                let inner = e.inner_html()
+            if i == num {
+                let inner = e
+                    .inner_html()
                     .replace("&gt;", ">")
                     .replace("&lt;", "<")
                     .replace("&amp;", "&");
                 fs::write(get_example_path(day, num), inner).ok()?;
-                return Some(())
+                return Some(());
             }
-            i+=1;
+            i += 1;
         }
     }
     None
 }
 
 fn get_input_data(day: i32) -> Option<()> {
-    let res = get_internet_data(format!("https://adventofcode.com/2023/day/{day}/input"))?;
+    let res = get_internet_data(format!("https://adventofcode.com/2024/day/{day}/input"))?;
     fs::write(get_path(day), res).ok()?;
     Some(())
 }
-
 
 fn lines_from_file(filename: impl AsRef<Path>) -> Vec<String> {
     let file = File::open(filename).expect("no such file");
