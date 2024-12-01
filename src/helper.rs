@@ -1,6 +1,6 @@
 use std::{
     fs::File,
-    io::{prelude::*, BufReader},
+    io::{prelude::*, BufReader, stdin, stdout},
     path::Path,
     env,
     fs,
@@ -37,14 +37,24 @@ fn get_example_path(day: i32, num: i32) -> String {
     format!("./inputs/day_{}_{}.txt", day, num)
 }
 
+fn get_cookie() -> String {
+    if env::var("AOC_COOKIE").is_ok() {
+        return env::var("AOC_COOKIE").expect("This should not happen");
+    }
+    if fs::exists("./.cookie").expect("FS corrupted") {
+        return lines_from_file("./.cookie").first().expect("LLL").to_owned();
+    }
+
+    println!("Enter aoc cookie: ");
+    let _ = stdout().flush();
+    let mut s = String::new();
+    stdin().read_line(&mut s).expect("That was not correct");
+    fs::write("./.cookie", s.clone()).ok();
+    s
+}
+
 fn get_internet_data(addr: String) -> Option<String> {
-    let cookie = match env::var("AOC_COOKIE") {
-        Ok(v) => format!("session={}", v),
-        Err(_) => {
-            println!("AOC_COOKIE does not exit");
-            return None;
-        }
-    };
+    let cookie = get_cookie();
     let url = "https://adventofcode.com".parse::<Url>().unwrap();
 
     let jar = Jar::default();
