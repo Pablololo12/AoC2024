@@ -10,7 +10,7 @@ fn run(which: i32, input: Vec<String>) -> (i64, i64) {
     let (first, second) = match which {
         1 => y2024::day01::run(input),
         2 => y2024::day02::run(input),
-        3 => todo!(),
+        3 => y2024::day03::run(input),
         4 => todo!(),
         5 => todo!(),
         6 => todo!(),
@@ -57,15 +57,11 @@ fn main() {
         // this block limits scope of borrows by ap.refer() method
         let mut ap = ArgumentParser::new();
         ap.set_description("Rust solution to Advent of Code");
-        ap.refer(&mut day)
-            .add_option(&["-d"], Store, "Input day number");
+        ap.refer(&mut day).add_option(&["-d"], Store, "Input day number");
         ap.refer(&mut example)
             .add_option(&["-e"], StoreTrue, "Runs examples rather than inputs");
-        ap.refer(&mut example_n).add_option(
-            &["-n"],
-            Store,
-            "Choose example number starting with 1",
-        );
+        ap.refer(&mut example_n)
+            .add_option(&["-n"], Store, "Choose example number starting with 1");
         ap.parse_args_or_exit();
     }
 
@@ -77,10 +73,7 @@ fn main() {
     if day == 0 {
         run_all();
     } else if example {
-        run(
-            day,
-            get_example_input(day, example_n).expect("No valid input"),
-        );
+        run(day, get_example_input(day, example_n).expect("No valid input"));
     } else {
         run(day, get_input(day).expect("No valid input"));
     }
