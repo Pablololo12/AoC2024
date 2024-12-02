@@ -1,11 +1,10 @@
 pub fn madness(inp: &Vec<i64>) -> bool {
-    let mut arr2 = inp.clone();
-    arr2.rotate_right(1);
-    let mut jumps: Vec<i64> = inp.into_iter().zip(arr2.into_iter()).map(|(y, z)| (y - z)).collect();
-    jumps.remove(0);
-    let all_negative = jumps.iter().filter(|y| **y > 0).count() == 0;
-    let all_positive = jumps.iter().filter(|y| **y < 0).count() == 0;
-    let sol = jumps.iter().filter(|y| (y.abs() > 3 || **y == 0)).count() == 0 && (all_negative || all_positive);
+    let mut iter2 = inp.iter();
+    iter2.next();
+    let jumps: Vec<i64> = inp.iter().zip(iter2).map(|(y, z)| (y - z)).collect();
+    let all_negative = !jumps.iter().any(|y| *y > 0);
+    let all_positive = !jumps.iter().any(|y| *y < 0);
+    let sol = !jumps.iter().any(|y| ((*y).abs() > 3 || *y == 0)) && (all_negative || all_positive);
     sol
 }
 
