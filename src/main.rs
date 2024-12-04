@@ -12,7 +12,7 @@ fn run(which: i32, input: Vec<String>) -> (i64, i64) {
         2 => y2024::day02::run(input),
         3 => y2024::day03::run(input),
         4 => y2024::day04::run(input),
-        5 => todo!(),
+        5 => y2024::day05::run(input),
         6 => todo!(),
         7 => todo!(),
         8 => todo!(),
