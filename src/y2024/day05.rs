@@ -18,10 +18,6 @@ pub fn parse_pages(inp: &Vec<String>) -> (Vec<(i64, i64)>, Vec<Vec<i64>>) {
     (output, out)
 }
 
-pub fn check(inp: &Vec<(i64, i64)>, val1: i64, val2: i64) -> bool {
-    inp.iter().any(|(i, j)| *i == val2 && *j == val1)
-}
-
 pub fn check_or(inp: &Vec<(i64, i64)>, val1: i64, val2: i64) -> Ordering {
     if inp.iter().any(|(i, j)| *i == val2 && *j == val1) {
         return Ordering::Greater;
@@ -31,21 +27,17 @@ pub fn check_or(inp: &Vec<(i64, i64)>, val1: i64, val2: i64) -> Ordering {
 }
 
 pub fn run(inp: Vec<String>) -> (i64, i64) {
-    let (order, mut pages) = parse_pages(&inp);
+    let (order, pages) = parse_pages(&inp);
     let mut acc = 0;
     let mut acc2 = 0;
-    for v in pages.iter_mut() {
-        let mut before = false;
-        let mut after = false;
-        for (i, jj) in v.iter().enumerate() {
-            before |= v.get(0..i).unwrap().iter().any(|w| check(&order, *w, *jj));
-            after |= v.get((i + 1)..).unwrap().iter().any(|w| check(&order, *jj, *w));
-        }
-        if !before && !after {
-            acc += v.get(v.len() / 2).unwrap();
+    for v in pages.iter() {
+        let mut copy = v.clone();
+        copy.sort_by(|z, zz| check_or(&order, *z, *zz));
+        let same = !v.iter().zip(&copy).any(|(j, jj)| *j != *jj);
+        if same {
+            acc += copy.get(copy.len() / 2).unwrap();
         } else {
-            v.sort_by(|z, zz| check_or(&order, *z, *zz));
-            acc2 += v.get(v.len() / 2).unwrap();
+            acc2 += copy.get(copy.len() / 2).unwrap();
         }
     }
     (acc, acc2)
