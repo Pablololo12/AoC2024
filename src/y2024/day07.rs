@@ -3,11 +3,13 @@ use rayon::iter::{IntoParallelIterator, ParallelIterator};
 fn search_p2(acc: i64, inn: &[i64]) -> bool {
     if inn.len() == 0 {
         return acc == 0;
-    } else if acc <= 0 {
-        return false;
     }
 
     let head: i64 = inn[0];
+    if acc < head {
+        return false;
+    }
+
     let num_digits = head.checked_ilog10().unwrap_or(0) as u32 + 1;
     let hundred = 10_i64.pow(num_digits);
 
@@ -26,11 +28,12 @@ fn search_p2(acc: i64, inn: &[i64]) -> bool {
 fn search_p1(acc: i64, inn: &[i64]) -> bool {
     if inn.len() == 0 {
         return acc == 0;
-    } else if acc <= 0 {
-        return false;
     }
 
     let head: i64 = inn[0];
+    if acc < head {
+        return false;
+    }
 
     let sum_path = search_p1(acc - head, &inn[1..]);
     let mul_path = match acc % head {
@@ -58,17 +61,15 @@ pub fn run(inp: Vec<String>) -> (i64, i64) {
         })
         .collect();
 
-    let p1 = inn
-        .clone()
-        .into_par_iter()
-        .filter(|z| search_p1(z.0, &z.1))
-        .map(|(u, _)| u)
-        .sum();
-    let p2 = inn
-        .into_par_iter()
-        .filter(|z| search_p2(z.0, &z.1))
-        .map(|(u, _)| u)
-        .sum();
-
-    (p1, p2)
+    inn.into_par_iter()
+        .map(|(z, l)| {
+            if search_p1(z, &l) {
+                (z, z)
+            } else if search_p2(z, &l) {
+                (0, z)
+            } else {
+                (0, 0)
+            }
+        })
+        .reduce(|| (0, 0), |(a, b), (c, d)| (a + c, b + d))
 }
