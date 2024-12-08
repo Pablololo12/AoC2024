@@ -1,85 +1,55 @@
-use std::collections::HashMap;
+use aoc24::Coordinate;
+use std::collections::{HashMap, HashSet};
 
-fn check_antinodes(inn: &[(i32, i32)], max: i32) -> Vec<(i32, i32)> {
+fn check_antinodes_extended(inn: &[Coordinate], out: &mut HashSet<Coordinate>, max: i32, limit: bool) {
     if inn.len() == 1 {
-        return vec![];
+        return;
     }
-    let (hx, hy) = inn[0];
-    let mut nodes: Vec<(i32, i32)> = vec![];
-
-    inn[1..].iter().for_each(|(jx, jy)| {
-        let (dx, dy) = (jx - hx, jy - hy);
-        let (fx, fy) = (hx - dx, hy - dy);
-        let (sx, sy) = (jx + dx, jy + dy);
-        if fx >= 0 && fx < max && fy >= 0 && fy < max {
-            nodes.push((fx, fy));
-        }
-        if sx >= 0 && sx < max && sy >= 0 && sy < max {
-            nodes.push((sx, sy));
-        }
-    });
-
-    nodes.extend(check_antinodes(&inn[1..], max));
-    nodes
-}
-
-fn check_antinodes_extended(inn: &[(i32, i32)], max: i32) -> Vec<(i32, i32)> {
-    if inn.len() == 1 {
-        return vec![];
-    }
-    let (hx, hy) = inn[0];
-    let mut nodes: Vec<(i32, i32)> = vec![];
-
-    inn[1..].iter().for_each(|(jx, jy)| {
-        let (dx, dy) = (jx - hx, jy - hy);
-        let (mut fx, mut fy) = (hx - dx, hy - dy);
-        let (mut sx, mut sy) = (jx + dx, jy + dy);
-        loop {
-            if fx >= 0 && fx < max && fy >= 0 && fy < max {
-                nodes.push((fx, fy));
-            } else {
+    let head = inn[0];
+    inn[1..].iter().for_each(|&other| {
+        let diff = other - head;
+        let mut first = head - diff;
+        while !first.out_of_bounds(max) {
+            out.insert(first);
+            first = first - diff;
+            if limit {
                 break;
             }
-            fx -= dx;
-            fy -= dy;
         }
-        loop {
-            if sx >= 0 && sx < max && sy >= 0 && sy < max {
-                nodes.push((sx, sy));
-            } else {
+        let mut second = other + diff;
+        while !second.out_of_bounds(max) {
+            out.insert(second);
+            second = second + diff;
+            if limit {
                 break;
             }
-            sx += dx;
-            sy += dy;
         }
     });
-
-    nodes.extend(check_antinodes_extended(&inn[1..], max));
-    nodes
+    check_antinodes_extended(&inn[1..], out, max, limit);
 }
 pub fn run(inp: Vec<String>) -> (i64, i64) {
-    let mut antena: HashMap<char, Vec<(i32, i32)>> = HashMap::new();
-    let mut nodes2: Vec<(i32, i32)> = vec![];
+    let mut antena: HashMap<char, Vec<Coordinate>> = HashMap::new();
+    let mut nodes: HashSet<Coordinate> = HashSet::new();
+    let mut nodes2: HashSet<Coordinate> = HashSet::new();
+
     inp.iter().enumerate().for_each(|(i, l)| {
         l.chars().enumerate().for_each(|(j, c)| {
             if c != '.' {
-                antena.entry(c).or_insert(Vec::new()).push((i as i32, j as i32));
-                nodes2.push((i as i32, j as i32));
+                antena
+                    .entry(c)
+                    .or_insert(Vec::new())
+                    .push(Coordinate::new(i as i32, j as i32));
+                nodes2.insert(Coordinate::new(i as i32, j as i32));
             }
         });
     });
-    let mut nodes: Vec<(i32, i32)> = vec![];
 
     antena
         .iter()
-        .for_each(|(_, v)| nodes.extend(check_antinodes(v, inp.len() as i32)));
-    nodes.sort();
-    nodes.dedup();
+        .for_each(|(_, v)| check_antinodes_extended(v, &mut nodes, inp.len() as i32, true));
 
     antena
         .iter()
-        .for_each(|(_, v)| nodes2.extend(check_antinodes_extended(v, inp.len() as i32)));
-    nodes2.sort();
-    nodes2.dedup();
+        .for_each(|(_, v)| check_antinodes_extended(v, &mut nodes2, inp.len() as i32, false));
     (nodes.len() as i64, nodes2.len() as i64)
 }
