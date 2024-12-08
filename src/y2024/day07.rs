@@ -45,8 +45,7 @@ fn search_p1(acc: i64, inn: &[i64]) -> bool {
 }
 
 pub fn run(inp: Vec<String>) -> (i64, i64) {
-    let inn: Vec<(i64, Vec<i64>)> = inp
-        .iter()
+    inp.into_par_iter()
         .map(|y| {
             let mut kk = y.split(":");
             (
@@ -56,12 +55,9 @@ pub fn run(inp: Vec<String>) -> (i64, i64) {
                     .split_whitespace()
                     .map(|x| x.parse::<i64>().unwrap())
                     .rev()
-                    .collect(),
+                    .collect::<Vec<i64>>(),
             )
         })
-        .collect();
-
-    inn.into_par_iter()
         .map(|(z, l)| {
             if search_p1(z, &l) {
                 (z, z)
