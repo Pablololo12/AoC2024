@@ -11,33 +11,29 @@ fn part1(start: Coordinate<usize>, map: &Vec<Vec<u8>>) -> u32 {
     let mut count = 0;
     visited.push(start);
     open.push_back(start);
-    while open.len() > 0 {
-        let o = open.pop_front().unwrap();
+    while let Some(o) = open.pop_front() {
         let val = map[o.x][o.y];
         if val == 9 {
             count += 1;
             continue;
         }
-        if o != start && val == 0 {
-            continue;
-        }
         let u = o - vertical;
-        if !u.out_of_bounds(max) && !visited.iter().any(|k| *k == u) && map[u.x][u.y] - val == 1 {
+        if !u.out_of_bounds(max) && map[u.x][u.y] - val == 1 && !visited.iter().any(|k| *k == u) {
             visited.push(u);
             open.push_back(u);
         }
         let d = o + vertical;
-        if !d.out_of_bounds(max) && !visited.iter().any(|k| *k == d) && map[d.x][d.y] - val == 1 {
+        if !d.out_of_bounds(max) && map[d.x][d.y] - val == 1 && !visited.iter().any(|k| *k == d) {
             visited.push(d);
             open.push_back(d);
         }
         let r = o + horizontal;
-        if !r.out_of_bounds(max) && !visited.iter().any(|k| *k == r) && map[r.x][r.y] - val == 1 {
+        if !r.out_of_bounds(max) && map[r.x][r.y] - val == 1 && !visited.iter().any(|k| *k == r) {
             visited.push(r);
             open.push_back(r);
         }
         let l = o - horizontal;
-        if !l.out_of_bounds(max) && !visited.iter().any(|k| *k == l) && map[l.x][l.y] - val == 1 {
+        if !l.out_of_bounds(max) && map[l.x][l.y] - val == 1 && !visited.iter().any(|k| *k == l) {
             visited.push(l);
             open.push_back(l);
         }
@@ -52,14 +48,10 @@ fn part2(start: Coordinate<usize>, mapa: &Vec<Vec<u8>>) -> u32 {
     let mut open: VecDeque<Coordinate<usize>> = VecDeque::new();
     let mut count = 0;
     open.push_back(start);
-    while open.len() > 0 {
-        let o = open.pop_front().unwrap();
+    while let Some(o) = open.pop_front() {
         let val = mapa[o.x][o.y];
         if val == 9 {
             count += 1;
-            continue;
-        }
-        if o != start && val == 0 {
             continue;
         }
         let u = o - vertical;
