@@ -1,7 +1,7 @@
 use aoc24::Coordinate;
 use std::collections::{HashMap, HashSet};
 
-fn check_antinodes_extended(inn: &[Coordinate], out: &mut HashSet<Coordinate>, max: i32, limit: bool) {
+fn check_antinodes_extended(inn: &[Coordinate<i32>], out: &mut HashSet<Coordinate<i32>>, max: i32, limit: bool) {
     if inn.len() == 1 {
         return;
     }
@@ -9,7 +9,7 @@ fn check_antinodes_extended(inn: &[Coordinate], out: &mut HashSet<Coordinate>, m
     inn[1..].iter().for_each(|&other| {
         let diff = other - head;
         let mut first = head - diff;
-        while !first.out_of_bounds(max) {
+        while !first.out_of_bounds(max as i32) {
             out.insert(first);
             first = first - diff;
             if limit {
@@ -17,7 +17,7 @@ fn check_antinodes_extended(inn: &[Coordinate], out: &mut HashSet<Coordinate>, m
             }
         }
         let mut second = other + diff;
-        while !second.out_of_bounds(max) {
+        while !second.out_of_bounds(max as i32) {
             out.insert(second);
             second = second + diff;
             if limit {
@@ -28,9 +28,9 @@ fn check_antinodes_extended(inn: &[Coordinate], out: &mut HashSet<Coordinate>, m
     check_antinodes_extended(&inn[1..], out, max, limit);
 }
 pub fn run(inp: Vec<String>) -> (i64, i64) {
-    let mut antena: HashMap<char, Vec<Coordinate>> = HashMap::new();
-    let mut nodes: HashSet<Coordinate> = HashSet::new();
-    let mut nodes2: HashSet<Coordinate> = HashSet::new();
+    let mut antena: HashMap<char, Vec<Coordinate<i32>>> = HashMap::new();
+    let mut nodes: HashSet<Coordinate<i32>> = HashSet::new();
+    let mut nodes2: HashSet<Coordinate<i32>> = HashSet::new();
 
     inp.iter().enumerate().for_each(|(i, l)| {
         l.chars().enumerate().for_each(|(j, c)| {

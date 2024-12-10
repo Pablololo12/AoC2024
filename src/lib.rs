@@ -29,12 +29,12 @@ impl<'a, T> Iterator for PairTerror<'a, T> {
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub struct Coordinate {
-    x: i32,
-    y: i32,
+pub struct Coordinate<T> {
+    pub x: T,
+    pub y: T,
 }
 
-impl Add for Coordinate {
+impl<T: Add<Output = T>> Add for Coordinate<T> {
     type Output = Self;
     fn add(self, other: Self) -> Self::Output {
         Self {
@@ -44,7 +44,7 @@ impl Add for Coordinate {
     }
 }
 
-impl Sub for Coordinate {
+impl<T: Sub<Output = T>> Sub for Coordinate<T> {
     type Output = Self;
     fn sub(self, other: Self) -> Self::Output {
         Self {
@@ -54,11 +54,15 @@ impl Sub for Coordinate {
     }
 }
 
-impl Coordinate {
-    pub fn new(x: i32, y: i32) -> Self {
+impl<T> Coordinate<T> {
+    pub fn new(x: T, y: T) -> Self {
         Self { x, y }
     }
-    pub fn out_of_bounds(self, max: i32) -> bool {
-        !(self.x >= 0 && self.x < max && self.y >= 0 && self.y < max)
+    pub fn out_of_bounds(self, max: T) -> bool
+    where
+        T: Ord + Copy,
+        T: From<u8>,
+    {
+        !(self.x >= T::from(0) && self.x < max && self.y >= T::from(0) && self.y < max)
     }
 }
