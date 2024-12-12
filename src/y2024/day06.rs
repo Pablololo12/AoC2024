@@ -5,7 +5,7 @@ use rayon::iter::{IntoParallelIterator, ParallelIterator};
 // 0b0100 down
 // 0b0010 left
 // 0b0001 right
-pub fn get_new(inn: (i32, i32), di: u8) -> (i32, i32) {
+fn get_new(inn: (i32, i32), di: u8) -> (i32, i32) {
     let (x, y) = inn;
     match di {
         0b1000 => (x - 1, y),
@@ -15,7 +15,7 @@ pub fn get_new(inn: (i32, i32), di: u8) -> (i32, i32) {
         _ => (0, 0),
     }
 }
-pub fn is_loop(map: &Vec<Vec<bool>>, pos_: (i32, i32)) -> bool {
+fn is_loop(map: &Vec<Vec<bool>>, pos_: (i32, i32)) -> bool {
     let mut visited = vec![vec![(0u32, 0u8); map[0].len()]; map.len()];
     let mut dir: u8 = 0b1000;
     let mut pos = pos_;
@@ -44,7 +44,7 @@ pub fn is_loop(map: &Vec<Vec<bool>>, pos_: (i32, i32)) -> bool {
     }
 }
 
-pub fn part2(mapp: Vec<Vec<bool>>, pos_: (i32, i32)) -> i64 {
+fn part2(mapp: Vec<Vec<bool>>, pos_: (i32, i32)) -> i64 {
     (0..mapp.len())
         .into_par_iter()
         .map(|i| {
