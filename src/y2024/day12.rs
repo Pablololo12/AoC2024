@@ -12,23 +12,14 @@ fn part1(
     mapa: &HashMap<Coordinate<i32>, char>,
     visited: &mut HashSet<Coordinate<i32>>,
 ) -> (u32, u32) {
-    if let Some(c) = mapa.get(&start) {
-        if *c != key {
-            return (1, 0);
-        }
-    } else {
-        return (1, 0);
+    match start {
+        s if Some(&key) != mapa.get(&s) => (1, 0),
+        d if !visited.insert(d) => (0, 0),
+        _ => ([UP, DOWN, LEFT, RIGHT]).iter().fold((0, 1), |(a, aa), d| {
+            let (b, bb) = part1(start + *d, key, mapa, visited);
+            (a + b, aa + bb)
+        }),
     }
-    if visited.contains(&start) {
-        return (0, 0);
-    }
-    visited.insert(start);
-    let (su, cu) = part1(start + UP, key, mapa, visited);
-    let (sd, cd) = part1(start + DOWN, key, mapa, visited);
-    let (sl, cl) = part1(start + LEFT, key, mapa, visited);
-    let (sr, cr) = part1(start + RIGHT, key, mapa, visited);
-
-    (su + sd + sl + sr, 1 + cu + cd + cl + cr)
 }
 
 fn part2_aux(
@@ -38,35 +29,26 @@ fn part2_aux(
     visited: &mut HashSet<Coordinate<i32>>,
     thistime: &mut HashSet<Coordinate<i32>>,
 ) -> u32 {
-    if let Some(c) = mapa.get(&start) {
-        if *c != key {
-            return 0;
-        }
-    } else {
+    if Some(&key) != mapa.get(&start) || !visited.insert(start) {
         return 0;
     }
-    if visited.contains(&start) {
-        return 0;
-    }
-    visited.insert(start);
     thistime.insert(start);
-    let cu = part2_aux(start + UP, key, mapa, visited, thistime);
-    let cd = part2_aux(start + DOWN, key, mapa, visited, thistime);
-    let cl = part2_aux(start + LEFT, key, mapa, visited, thistime);
-    let cr = part2_aux(start + RIGHT, key, mapa, visited, thistime);
-
-    1 + cu + cd + cl + cr
+    ([UP, DOWN, LEFT, RIGHT])
+        .iter()
+        .map(|w| part2_aux(start + *w, key, mapa, visited, thistime))
+        .sum::<u32>()
+        + 1
 }
 
 fn part2(mapa: &HashMap<Coordinate<i32>, char>) -> u32 {
     let mut total_v: HashSet<Coordinate<i32>> = HashSet::new();
     mapa.keys()
         .map(|w| {
-            let mut visited: HashSet<Coordinate<i32>> = HashSet::new();
-            let area = part2_aux(*w, *mapa.get(w).unwrap(), &mapa, &mut total_v, &mut visited);
-            if visited.len() == 0 {
+            if total_v.contains(w) {
                 return 0;
             }
+            let mut visited: HashSet<Coordinate<i32>> = HashSet::new();
+            let area = part2_aux(*w, *mapa.get(w).unwrap(), &mapa, &mut total_v, &mut visited);
             let ix = visited.iter().map(|f| f.x).min().unwrap() - 1;
             let ax = visited.iter().map(|f| f.x).max().unwrap() + 1;
             let iy = visited.iter().map(|f| f.y).min().unwrap() - 1;
