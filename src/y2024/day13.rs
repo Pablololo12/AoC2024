@@ -17,18 +17,16 @@ fn get_in(inp: &Vec<String>, mt: &str) -> Vec<(i64, i64)> {
 
 fn solver(ax: i64, ay: i64, bx: i64, by: i64, x: i64, y: i64) -> i64 {
     let det = ax * by - bx * ay;
-    if det != 0 {
-        let iax = by;
-        let ibx = -bx;
-        let iay = -ay;
-        let iby = ax;
-        let a = (iax * x + ibx * y) / det;
-        let b = (iay * x + iby * y) / det;
-        let res1 = a * ax + b * bx;
-        let res2 = a * ay + b * by;
-        if res1 == x && res2 == y {
-            return a * 3 + b;
-        }
+    let iax = by;
+    let ibx = -bx;
+    let iay = -ay;
+    let iby = ax;
+    let a = (iax * x + ibx * y) / det;
+    let b = (iay * x + iby * y) / det;
+    let res1 = a * ax + b * bx;
+    let res2 = a * ay + b * by;
+    if res1 == x && res2 == y {
+        return a * 3 + b;
     }
     0
 }

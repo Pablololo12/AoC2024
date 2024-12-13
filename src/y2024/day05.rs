@@ -30,16 +30,16 @@ pub fn check_or(inp: &Vec<(i64, i64)>, val1: i64, val2: i64) -> Ordering {
 
 pub fn run(inp: Vec<String>) -> (i64, i64) {
     let (order, pages) = parse_pages(&inp);
-    let mut acc = 0;
-    let mut acc2 = 0;
-    for v in pages.iter() {
-        let mut copy = v.clone();
-        copy.sort_by(|z, zz| check_or(&order, *z, *zz));
-        if !v.iter().zip(&copy).any(|(j, jj)| *j != *jj) {
-            acc += copy.get(copy.len() / 2).unwrap();
-        } else {
-            acc2 += copy.get(copy.len() / 2).unwrap();
-        }
-    }
-    (acc, acc2)
+    pages
+        .iter()
+        .map(|v| {
+            let mut copy = v.clone();
+            copy.sort_by(|z, zz| check_or(&order, *z, *zz));
+            if !v.iter().zip(&copy).any(|(j, jj)| *j != *jj) {
+                return (*copy.get(copy.len() / 2).unwrap(), 0);
+            } else {
+                return (0, *copy.get(copy.len() / 2).unwrap());
+            }
+        })
+        .fold((0, 0), |(a, aa), (i, j)| (a + i, aa + j))
 }
