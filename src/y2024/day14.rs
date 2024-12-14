@@ -1,72 +1,80 @@
-use std::io::{self, Read};
-
 use regex::Regex;
 
 const MAXX: i64 = 101;
-const MIDDLEX: i64 = 50;
 const MAXY: i64 = 103;
-const MIDDLEY: i64 = 51;
 const STEPS: i64 = 100;
 
-fn step(inp: &Vec<String>, steps: i64) -> Vec<(i64, i64)> {
+fn get_in(inp: &Vec<String>) -> Vec<(i64, i64, i64, i64)> {
     let re = Regex::new(r"p=([0-9]+),([0-9]+) v=(-?[0-9]+),(-?[0-9]+)").unwrap();
     inp.iter()
         .map(|w| {
             let c = re.captures(w).unwrap();
-            let x = c.get(1).unwrap().as_str().parse::<i64>().unwrap();
-            let y = c.get(2).unwrap().as_str().parse::<i64>().unwrap();
-            let vx = c.get(3).unwrap().as_str().parse::<i64>().unwrap();
-            let vy = c.get(4).unwrap().as_str().parse::<i64>().unwrap();
-            let fx = match (x + vx * steps) % MAXX {
+            let vx = match c.get(3).unwrap().as_str().parse::<i64>().unwrap() {
                 a if a < 0 => MAXX + a,
                 a => a,
             };
-            let fy = match (y + vy * steps) % MAXY {
+            let vy = match c.get(4).unwrap().as_str().parse::<i64>().unwrap() {
                 a if a < 0 => MAXY + a,
                 a => a,
             };
+            (
+                c.get(1).unwrap().as_str().parse::<i64>().unwrap(),
+                c.get(2).unwrap().as_str().parse::<i64>().unwrap(),
+                vx,
+                vy,
+            )
+        })
+        .collect()
+}
+
+fn step(inp: &Vec<(i64, i64, i64, i64)>, steps: i64) -> Vec<(i64, i64)> {
+    inp.iter()
+        .map(|(x, y, vx, vy)| {
+            let fx = (x + vx * steps) % MAXX;
+            let fy = (y + vy * steps) % MAXY;
             (fx, fy)
         })
         .collect()
 }
 
-#[allow(dead_code)]
-fn print_pretty(inp: &Vec<String>) {
-    let mut buffer = [0; 1];
-    let stdin = io::stdin();
-    let mut handle = stdin.lock();
-    let mut steps = 1495; // I was going 1 step at a time until I saw the pattern
+fn print_pretty(inp: &Vec<(i64, i64, i64, i64)>, printt: bool) -> i64 {
+    let mut steps = 0;
+    let mut mapa;
     loop {
-        println!("Steps {steps}");
-        handle.read_exact(&mut buffer).unwrap();
-        if buffer[0] == 27 {
-            //esc key
-            break;
+        steps += 1;
+        mapa = step(&inp, steps);
+        let len_b = mapa.len();
+        mapa.sort();
+        mapa.dedup();
+        if len_b != mapa.len() {
+            continue;
         }
-        let mapa = step(&inp, steps);
+        break;
+    }
+    if printt {
         for i in 0..MAXY {
             for j in 0..MAXX {
                 if mapa.contains(&(j as i64, i as i64)) {
                     print!("#");
                 } else {
-                    print!(".");
+                    print!(" ");
                 }
             }
             println!(" ");
         }
-        steps += 101;
     }
+    steps
 }
 
-pub fn run(inp: Vec<String>) -> (i64, i64) {
-    let mapa = step(&inp, STEPS);
-    let q1 = mapa.iter().filter(|(x, y)| *x < MIDDLEX && *y < MIDDLEY).count() as i64;
-    let q2 = mapa.iter().filter(|(x, y)| *x > MIDDLEX && *y < MIDDLEY).count() as i64;
-    let q3 = mapa.iter().filter(|(x, y)| *x < MIDDLEX && *y > MIDDLEY).count() as i64;
-    let q4 = mapa.iter().filter(|(x, y)| *x > MIDDLEX && *y > MIDDLEY).count() as i64;
+pub fn run(inp: Vec<String>, easter: bool) -> (i64, i64) {
+    let i = get_in(&inp);
+    let mapa = step(&i, STEPS);
+    let q1 = mapa.iter().filter(|(x, y)| *x < MAXX / 2 && *y < MAXY / 2).count() as i64;
+    let q2 = mapa.iter().filter(|(x, y)| *x > MAXX / 2 && *y < MAXY / 2).count() as i64;
+    let q3 = mapa.iter().filter(|(x, y)| *x < MAXX / 2 && *y > MAXY / 2).count() as i64;
+    let q4 = mapa.iter().filter(|(x, y)| *x > MAXX / 2 && *y > MAXY / 2).count() as i64;
 
-    // Uncomment to see the easter egg
-    //print_pretty(&inp);
+    let p2 = print_pretty(&i, easter);
 
-    (q1 * q2 * q3 * q4, 7858)
+    (q1 * q2 * q3 * q4, p2)
 }

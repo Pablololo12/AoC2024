@@ -5,7 +5,7 @@ use argparse::{ArgumentParser, Store, StoreTrue};
 use helper::{get_example_input, get_input};
 use std::time::Instant;
 
-fn run(which: i32, input: Vec<String>) -> (i64, i64) {
+fn run(which: i32, input: Vec<String>, easter: bool) -> (i64, i64) {
     let now = Instant::now();
     let (first, second) = match which {
         1 => y2024::day01::run(input),
@@ -21,8 +21,8 @@ fn run(which: i32, input: Vec<String>) -> (i64, i64) {
         11 => y2024::day11::run(input),
         12 => y2024::day12::run(input),
         13 => y2024::day13::run(input),
-        14 => y2024::day14::run(input),
-        15 => todo!(),
+        14 => y2024::day14::run(input, easter),
+        15 => y2024::day15::run(input),
         16 => todo!(),
         17 => todo!(),
         18 => todo!(),
@@ -43,38 +43,34 @@ fn run(which: i32, input: Vec<String>) -> (i64, i64) {
     (first, second)
 }
 
-fn run_all() {
+fn run_all(easter: bool) {
     for i in 1..=25 {
-        run(i, get_input(i).expect("No valid input"));
+        run(i, get_input(i).expect("No valid input"), easter);
     }
 }
 
 fn main() {
     let mut day = 0;
-    let mut example = false;
     let mut example_n = 0;
+    let mut easter = false;
     {
         // this block limits scope of borrows by ap.refer() method
         let mut ap = ArgumentParser::new();
         ap.set_description("Rust solution to Advent of Code");
         ap.refer(&mut day).add_option(&["-d"], Store, "Input day number");
-        ap.refer(&mut example)
-            .add_option(&["-e"], StoreTrue, "Runs examples rather than inputs");
         ap.refer(&mut example_n)
-            .add_option(&["-n"], Store, "Choose example number starting with 1");
+            .add_option(&["-e"], Store, "Runs examples rather than inputs");
+        ap.refer(&mut easter).add_option(&["--easter"], StoreTrue, "Surprise!");
         ap.parse_args_or_exit();
     }
 
-    println!(
-        "Options selected: day {}, example {}, which example {}",
-        day, example, example_n
-    );
+    println!("Options selected: day {}, which example {}", day, example_n);
 
     if day == 0 {
-        run_all();
-    } else if example {
-        run(day, get_example_input(day, example_n).expect("No valid input"));
+        run_all(easter);
+    } else if example_n != 0 {
+        run(day, get_example_input(day, example_n).expect("No valid input"), easter);
     } else {
-        run(day, get_input(day).expect("No valid input"));
+        run(day, get_input(day).expect("No valid input"), easter);
     }
 }
