@@ -1,4 +1,5 @@
 use aoc24::Coordinate;
+use std::{thread, time};
 
 fn pretty_print(start: Coordinate<i32>, obstacles: &Vec<Coordinate<i32>>, boxes: &Vec<Coordinate<i32>>, m: u8) {
     let d = match m {
@@ -59,6 +60,17 @@ fn pretty_print2(start: Coordinate<i32>, obstacles: &Vec<Coordinate<i32>>, boxes
     }
 }
 
+fn crazy_print(
+    start: Coordinate<i32>,
+    obstacles: &Vec<Coordinate<i32>>,
+    boxes: &Vec<Coordinate<i32>>,
+    m: u8,
+    steps: u32,
+) {
+    print!("\x1B[2J\x1B[1;1H");
+    println!("Step {steps}");
+    pretty_print2(start, obstacles, boxes, m);
+}
 fn movh(
     start: &mut Coordinate<i32>,
     dir: Coordinate<i32>,
@@ -177,8 +189,10 @@ fn part2(
     obstacles: &Vec<Coordinate<i32>>,
     boxes: &mut Vec<Coordinate<i32>>,
     moves: &Vec<u8>,
+    easter: bool,
 ) -> i64 {
-    //pretty_print2(start, obstacles, boxes, 4);
+    let mut ii = 0;
+    let mil = time::Duration::from_millis(100);
     moves.iter().for_each(|m| {
         match m {
             0 => {
@@ -197,8 +211,12 @@ fn part2(
                 println!("Problems again");
                 ()
             }
+        };
+        if easter {
+            crazy_print(start, obstacles, boxes, *m, ii);
+            ii += 1;
+            thread::sleep(mil);
         }
-        //pretty_print2(start, obstacles, boxes, *m);
     });
     boxes.iter().map(|&w| w.x as i64 * 100 + w.y as i64).sum::<i64>() as i64
 }
@@ -239,32 +257,28 @@ fn part1(
     boxes: &mut Vec<Coordinate<i32>>,
     moves: &Vec<u8>,
 ) -> i64 {
-    //pretty_print(start, obstacles, boxes, 4);
-    moves.iter().for_each(|m| {
-        match m {
-            0 => {
-                mov(&mut start, Coordinate { x: -1, y: 0 }, boxes, obstacles);
-            }
-            1 => {
-                mov(&mut start, Coordinate { x: 0, y: 1 }, boxes, obstacles);
-            }
-            2 => {
-                mov(&mut start, Coordinate { x: 1, y: 0 }, boxes, obstacles);
-            }
-            3 => {
-                mov(&mut start, Coordinate { x: 0, y: -1 }, boxes, obstacles);
-            }
-            _ => {
-                println!("Problems again");
-                ()
-            }
+    moves.iter().for_each(|m| match m {
+        0 => {
+            mov(&mut start, Coordinate { x: -1, y: 0 }, boxes, obstacles);
         }
-        //pretty_print(start, obstacles, boxes, *m);
+        1 => {
+            mov(&mut start, Coordinate { x: 0, y: 1 }, boxes, obstacles);
+        }
+        2 => {
+            mov(&mut start, Coordinate { x: 1, y: 0 }, boxes, obstacles);
+        }
+        3 => {
+            mov(&mut start, Coordinate { x: 0, y: -1 }, boxes, obstacles);
+        }
+        _ => {
+            println!("Problems again");
+            ()
+        }
     });
     boxes.iter().map(|&w| w.x * 100 + w.y).sum::<i32>() as i64
 }
 
-pub fn run(inp: Vec<String>) -> (i64, i64) {
+pub fn run(inp: Vec<String>, easter: bool) -> (i64, i64) {
     let mut obstacles: Vec<Coordinate<i32>> = vec![];
     let mut boxes: Vec<Coordinate<i32>> = vec![];
     let mut robot: Coordinate<i32> = Coordinate { x: 0, y: 0 };
@@ -336,8 +350,10 @@ pub fn run(inp: Vec<String>) -> (i64, i64) {
     });
 
     let p1 = part1(robot, &obstacles, &mut boxes, &moves);
-    pretty_print(robot, &obstacles, &boxes, 4);
-    let p2 = part2(robot2, &obstacles2, &mut boxes2, &moves);
-    pretty_print2(robot2, &obstacles2, &boxes2, 4);
+    let p2 = part2(robot2, &obstacles2, &mut boxes2, &moves, easter);
+    if easter {
+        pretty_print(robot, &obstacles, &boxes, 4);
+        pretty_print2(robot2, &obstacles2, &boxes2, 4);
+    }
     (p1, p2)
 }
