@@ -192,7 +192,7 @@ fn part2(
     easter: bool,
 ) -> i64 {
     let mut ii = 0;
-    let mil = time::Duration::from_millis(100);
+    let mil = time::Duration::from_millis(200);
     moves.iter().for_each(|m| {
         match m {
             0 => {
@@ -212,11 +212,11 @@ fn part2(
                 ()
             }
         };
-        if easter {
+        if easter && ii > 8000 {
             crazy_print(start, obstacles, boxes, *m, ii);
-            ii += 1;
             thread::sleep(mil);
         }
+        ii += 1;
     });
     boxes.iter().map(|&w| w.x as i64 * 100 + w.y as i64).sum::<i64>() as i64
 }
