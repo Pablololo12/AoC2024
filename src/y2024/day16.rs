@@ -73,47 +73,51 @@ fn get_opposite(d1: Coordinate<i32>) -> Coordinate<i32> {
 }
 
 fn magic(mapa: &Vec<Coordinate<i32>>, end: Coordinate<i32>, pos: Coordinate<i32>, easter: bool) -> (i64, i64) {
-    let mut open: VecDeque<(Coordinate<i32>, Coordinate<i32>, i64)> = VecDeque::new();
+    let mut open: Vec<(Coordinate<i32>, Coordinate<i32>, i64)> = Vec::new();
     let mut scores: HashMap<Coordinate<i32>, HashMap<Coordinate<i32>, i64>> = HashMap::new();
     mapa.iter().for_each(|w| {
         let ma: HashMap<Coordinate<i32>, i64> = HashMap::new();
         scores.insert(*w, ma);
     });
-    open.push_back((pos, RIGHT, 0));
+    open.push((pos, RIGHT, 0));
     let mut mini = MAX;
-    while let Some((pp, dir, prev_s)) = open.pop_back() {
+    while let Some((pp, dir, prev_s)) = open.pop() {
         if pp == end {
             if prev_s < mini {
                 mini = prev_s;
             }
             continue;
         }
-        [UP, LEFT, DOWN, RIGHT].iter().for_each(|&w| {
-            if counter(dir, w) {
-                return;
-            }
-            let tmp = pp + w;
-            let sc = match w == dir {
-                true => 1,
-                _ => 1001,
-            };
-            if mapa.contains(&tmp) {
+        [UP, LEFT, DOWN, RIGHT]
+            .iter()
+            .filter(|w| !counter(dir, **w))
+            .map(|w| {
+                (
+                    pp + *w,
+                    *w,
+                    match *w == dir {
+                        true => 1,
+                        _ => 1001,
+                    },
+                )
+            })
+            .filter(|(tmp, _, _)| mapa.contains(&tmp))
+            .for_each(|(tmp, w, sc)| {
                 if let Some(s) = scores.get(&pp).unwrap().get(&get_opposite(w)) {
                     if *s < prev_s + sc {
                         return;
                     }
                 }
-                if let Some(s) = scores.get(&pp).unwrap().get(&w) {
+                if let Some(s) = scores.get_mut(&pp).unwrap().get_mut(&w) {
                     if *s > prev_s + sc {
-                        *scores.get_mut(&pp).unwrap().get_mut(&w).unwrap() = prev_s + sc;
-                        open.push_back((tmp, w, prev_s + sc));
+                        *s = prev_s + sc;
+                        open.push((tmp, w, prev_s + sc));
                     }
                 } else {
                     scores.get_mut(&pp).unwrap().insert(w, prev_s + sc);
-                    open.push_back((tmp, w, prev_s + sc));
+                    open.push((tmp, w, prev_s + sc));
                 }
-            }
-        });
+            });
     }
     let mut uniques: HashSet<Coordinate<i32>> = HashSet::new();
     magic_rec(&scores, vec![], &mut uniques, pos, end, 0, mini);
