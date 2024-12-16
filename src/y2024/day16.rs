@@ -58,6 +58,20 @@ fn magic_rec(
     });
 }
 
+fn counter(d1: Coordinate<i32>, d2: Coordinate<i32>) -> bool {
+    d2 == get_opposite(d1)
+}
+
+fn get_opposite(d1: Coordinate<i32>) -> Coordinate<i32> {
+    match d1 {
+        UP => DOWN,
+        DOWN => UP,
+        LEFT => RIGHT,
+        RIGHT => LEFT,
+        _ => Coordinate { x: 0, y: 0 },
+    }
+}
+
 fn magic(mapa: &Vec<Coordinate<i32>>, end: Coordinate<i32>, pos: Coordinate<i32>, easter: bool) -> (i64, i64) {
     let mut open: VecDeque<(Coordinate<i32>, Coordinate<i32>, i64)> = VecDeque::new();
     let mut scores: HashMap<Coordinate<i32>, HashMap<Coordinate<i32>, i64>> = HashMap::new();
@@ -75,12 +89,20 @@ fn magic(mapa: &Vec<Coordinate<i32>>, end: Coordinate<i32>, pos: Coordinate<i32>
             continue;
         }
         [UP, LEFT, DOWN, RIGHT].iter().for_each(|&w| {
+            if counter(dir, w) {
+                return;
+            }
             let tmp = pp + w;
             let sc = match w == dir {
                 true => 1,
                 _ => 1001,
             };
             if mapa.contains(&tmp) {
+                if let Some(s) = scores.get(&pp).unwrap().get(&get_opposite(w)) {
+                    if *s < prev_s + sc {
+                        return;
+                    }
+                }
                 if let Some(s) = scores.get(&pp).unwrap().get(&w) {
                     if *s > prev_s + sc {
                         *scores.get_mut(&pp).unwrap().get_mut(&w).unwrap() = prev_s + sc;
