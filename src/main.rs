@@ -24,7 +24,7 @@ fn run(which: i32, input: Vec<String>, easter: bool) -> (i64, i64) {
         14 => y2024::day14::run(input, easter),
         15 => y2024::day15::run(input, easter),
         16 => y2024::day16::run(input, easter),
-        17 => todo!(),
+        17 => y2024::day17::run(input),
         18 => todo!(),
         19 => todo!(),
         20 => todo!(),
