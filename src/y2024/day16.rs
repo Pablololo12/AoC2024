@@ -1,5 +1,5 @@
 use std::{
-    collections::{HashMap, HashSet},
+    collections::{BTreeSet, HashMap, HashSet},
     i64::MAX,
 };
 
@@ -73,15 +73,16 @@ fn get_opposite(d1: Coordinate<i32>) -> Coordinate<i32> {
 }
 
 fn magic(mapa: &Vec<Coordinate<i32>>, end: Coordinate<i32>, pos: Coordinate<i32>, easter: bool) -> (i64, i64) {
-    let mut open: Vec<(Coordinate<i32>, Coordinate<i32>, i64)> = Vec::new();
+    //let mut open: Vec<(Coordinate<i32>, Coordinate<i32>, i64)> = Vec::new();
+    let mut open: BTreeSet<(i64, Coordinate<i32>, Coordinate<i32>)> = BTreeSet::new();
     let mut scores: HashMap<Coordinate<i32>, HashMap<Coordinate<i32>, i64>> = HashMap::new();
     mapa.iter().for_each(|w| {
         let ma: HashMap<Coordinate<i32>, i64> = HashMap::new();
         scores.insert(*w, ma);
     });
-    open.push((pos, RIGHT, 0));
+    open.insert((0, pos, RIGHT));
     let mut mini = MAX;
-    while let Some((pp, dir, prev_s)) = open.pop() {
+    while let Some((prev_s, pp, dir)) = open.pop_first() {
         if pp == end {
             if prev_s < mini {
                 mini = prev_s;
@@ -111,11 +112,11 @@ fn magic(mapa: &Vec<Coordinate<i32>>, end: Coordinate<i32>, pos: Coordinate<i32>
                 if let Some(s) = scores.get_mut(&pp).unwrap().get_mut(&w) {
                     if *s > prev_s + sc {
                         *s = prev_s + sc;
-                        open.push((tmp, w, prev_s + sc));
+                        open.insert((prev_s, tmp, w));
                     }
                 } else {
                     scores.get_mut(&pp).unwrap().insert(w, prev_s + sc);
-                    open.push((tmp, w, prev_s + sc));
+                    open.insert((prev_s + sc, tmp, w));
                 }
             });
     }

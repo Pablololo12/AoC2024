@@ -1,3 +1,4 @@
+use std::cmp::Ordering;
 use std::ops::{Add, Sub};
 
 #[derive(Clone)]
@@ -28,7 +29,7 @@ impl<'a, T> Iterator for PairTerror<'a, T> {
     }
 }
 
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, PartialOrd)]
 pub struct Coordinate<T> {
     pub x: T,
     pub y: T,
@@ -50,6 +51,15 @@ impl<T: Sub<Output = T>> Sub for Coordinate<T> {
         Self {
             x: self.x - other.x,
             y: self.y - other.y,
+        }
+    }
+}
+
+impl<T: Ord> Ord for Coordinate<T> {
+    fn cmp(&self, other: &Self) -> Ordering {
+        match self.x.cmp(&other.x) {
+            Ordering::Equal => self.y.cmp(&other.y),
+            other => other,
         }
     }
 }
