@@ -278,7 +278,7 @@ fn part1(
     boxes.iter().map(|&w| w.x * 100 + w.y).sum::<i32>() as i64
 }
 
-pub fn run(inp: Vec<String>, easter: bool) -> (i64, i64) {
+pub fn run(inp: Vec<String>, easter: bool) -> (String, String) {
     let mut obstacles: Vec<Coordinate<i32>> = vec![];
     let mut boxes: Vec<Coordinate<i32>> = vec![];
     let mut robot: Coordinate<i32> = Coordinate { x: 0, y: 0 };
@@ -355,5 +355,5 @@ pub fn run(inp: Vec<String>, easter: bool) -> (i64, i64) {
         pretty_print(robot, &obstacles, &boxes, 4);
         pretty_print2(robot2, &obstacles2, &boxes2, 4);
     }
-    (p1, p2)
+    (format!("{}", p1), format!("{}", p2))
 }

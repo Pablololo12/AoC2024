@@ -28,9 +28,9 @@ pub fn check_or(inp: &Vec<(i64, i64)>, val1: i64, val2: i64) -> Ordering {
     }
 }
 
-pub fn run(inp: Vec<String>) -> (i64, i64) {
+pub fn run(inp: Vec<String>) -> (String, String) {
     let (order, pages) = parse_pages(&inp);
-    pages
+    let (p1, p2) = pages
         .iter()
         .map(|v| {
             let mut copy = v.clone();
@@ -41,5 +41,6 @@ pub fn run(inp: Vec<String>) -> (i64, i64) {
                 return (0, *copy.get(copy.len() / 2).unwrap());
             }
         })
-        .fold((0, 0), |(a, aa), (i, j)| (a + i, aa + j))
+        .fold((0, 0), |(a, aa), (i, j)| (a + i, aa + j));
+    (format!("{}", p1), format!("{}", p2))
 }

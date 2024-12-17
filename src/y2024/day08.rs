@@ -27,7 +27,7 @@ fn check_antinodes_extended(inn: &[Coordinate<i32>], out: &mut HashSet<Coordinat
     });
     check_antinodes_extended(&inn[1..], out, max, limit);
 }
-pub fn run(inp: Vec<String>) -> (i64, i64) {
+pub fn run(inp: Vec<String>) -> (String, String) {
     let mut antena: HashMap<char, Vec<Coordinate<i32>>> = HashMap::new();
     let mut nodes: HashSet<Coordinate<i32>> = HashSet::new();
     let mut nodes2: HashSet<Coordinate<i32>> = HashSet::new();
@@ -51,5 +51,5 @@ pub fn run(inp: Vec<String>) -> (i64, i64) {
     antena
         .iter()
         .for_each(|(_, v)| check_antinodes_extended(v, &mut nodes2, inp.len() as i32, false));
-    (nodes.len() as i64, nodes2.len() as i64)
+    (format!("{}", nodes.len()), format!("{}", nodes2.len()))
 }

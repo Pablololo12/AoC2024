@@ -19,7 +19,7 @@ pub fn part2(inp: &String) -> i64 {
     part1(&after)
 }
 
-pub fn run(inp: Vec<String>) -> (i64, i64) {
+pub fn run(inp: Vec<String>) -> (String, String) {
     let jj = inp.join("");
-    (part1(&jj), part2(&jj))
+    (format!("{}", part1(&jj)), format!("{}", part2(&jj)))
 }

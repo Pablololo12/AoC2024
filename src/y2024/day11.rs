@@ -16,7 +16,7 @@ fn recursive_solv(n: u64, d: u64) -> u64 {
     count
 }
 
-pub fn run(inp: Vec<String>) -> (i64, i64) {
+pub fn run(inp: Vec<String>) -> (String, String) {
     let arr: Vec<u64> = inp
         .first()
         .unwrap()
@@ -25,5 +25,5 @@ pub fn run(inp: Vec<String>) -> (i64, i64) {
         .collect();
     let p1: u64 = arr.iter().map(|w| recursive_solv(*w, 25)).sum();
     let p2: u64 = arr.iter().map(|w| recursive_solv(*w, 75)).sum();
-    (p1 as i64, p2 as i64)
+    (format!("{}", p1), format!("{}", p2))
 }

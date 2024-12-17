@@ -31,13 +31,14 @@ fn solver(ax: i64, ay: i64, bx: i64, by: i64, x: i64, y: i64) -> i64 {
     0
 }
 
-pub fn run(inp: Vec<String>) -> (i64, i64) {
-    izip!(get_in(&inp, "A:"), get_in(&inp, "B:"), get_in(&inp, "="))
+pub fn run(inp: Vec<String>) -> (String, String) {
+    let (p1, p2) = izip!(get_in(&inp, "A:"), get_in(&inp, "B:"), get_in(&inp, "="))
         .map(|((ax, ay), (bx, by), (x, y))| {
             (
                 solver(ax, ay, bx, by, x, y),
                 solver(ax, ay, bx, by, x + 10000000000000, y + 10000000000000),
             )
         })
-        .fold((0, 0), |(a, aa), (i, j)| (a + i, aa + j))
+        .fold((0, 0), |(a, aa), (i, j)| (a + i, aa + j));
+    (format!("{}", p1), format!("{}", p2))
 }

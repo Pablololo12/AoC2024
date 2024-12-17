@@ -99,6 +99,6 @@ pub fn part2(inp: &Vec<String>) -> i64 {
     acc
 }
 
-pub fn run(inp: Vec<String>) -> (i64, i64) {
-    (part1(&inp), part2(&inp))
+pub fn run(inp: Vec<String>) -> (String, String) {
+    (format!("{}", part1(&inp)), format!("{}", part2(&inp)))
 }

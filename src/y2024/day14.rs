@@ -66,7 +66,7 @@ fn print_pretty(inp: &Vec<(i64, i64, i64, i64)>, printt: bool) -> i64 {
     steps
 }
 
-pub fn run(inp: Vec<String>, easter: bool) -> (i64, i64) {
+pub fn run(inp: Vec<String>, easter: bool) -> (String, String) {
     let i = get_in(&inp);
     let mapa = step(&i, STEPS);
     let q1 = mapa.iter().filter(|(x, y)| *x < MAXX / 2 && *y < MAXY / 2).count() as i64;
@@ -76,5 +76,5 @@ pub fn run(inp: Vec<String>, easter: bool) -> (i64, i64) {
 
     let p2 = print_pretty(&i, easter);
 
-    (q1 * q2 * q3 * q4, p2)
+    (format!("{}", q1 * q2 * q3 * q4), format!("{}", p2))
 }

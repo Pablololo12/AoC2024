@@ -36,7 +36,7 @@ fn sim(mut ra: i64, mut rb: i64, mut rc: i64, inst: &Vec<u8>) -> Vec<u8> {
     output
 }
 
-pub fn run(inp: Vec<String>) -> (i64, i64) {
+pub fn run(inp: Vec<String>) -> (String, String) {
     let re = Regex::new(r"Register [A|B|C]: ([0-9]+)").unwrap();
     let mut ra = 0;
     let mut rb = 0;
@@ -64,7 +64,6 @@ pub fn run(inp: Vec<String>) -> (i64, i64) {
         }
     });
     let output = sim(ra, rb, rc, &inst);
-    println!("{}", output.iter().format(","));
 
     let mut omg = 0;
     for i in 1..=inst.len() {
@@ -84,5 +83,5 @@ pub fn run(inp: Vec<String>) -> (i64, i64) {
             omg += 1;
         }
     }
-    (0, omg / 8)
+    (format!("{}", output.iter().format(",")), format!("{}", omg / 8))
 }

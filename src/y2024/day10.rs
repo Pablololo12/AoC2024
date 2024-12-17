@@ -74,7 +74,7 @@ fn part2(start: Coordinate<usize>, mapa: &Vec<Vec<u8>>) -> u32 {
     count
 }
 
-pub fn run(inp: Vec<String>) -> (i64, i64) {
+pub fn run(inp: Vec<String>) -> (String, String) {
     let mut head: Vec<Coordinate<usize>> = vec![];
     let map: Vec<Vec<u8>> = inp
         .iter()
@@ -95,5 +95,5 @@ pub fn run(inp: Vec<String>) -> (i64, i64) {
 
     let p1: u32 = head.iter().map(|w| part1(*w, &map)).sum();
     let p2: u32 = head.iter().map(|w| part2(*w, &map)).sum();
-    (p1 as i64, p2 as i64)
+    (format!("{}", p1), format!("{}", p2))
 }

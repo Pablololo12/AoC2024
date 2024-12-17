@@ -59,7 +59,7 @@ fn part2(mut inp: Vec<(u64, u64)>) -> u64 {
         .sum()
 }
 
-pub fn run(inp: Vec<String>) -> (i64, i64) {
+pub fn run(inp: Vec<String>) -> (String, String) {
     let mut disk: Vec<u64> = vec![];
     let mut dis: Vec<(u64, u64)> = vec![];
     inp.first().unwrap().chars().enumerate().for_each(|(i, x)| {
@@ -74,5 +74,5 @@ pub fn run(inp: Vec<String>) -> (i64, i64) {
         }
     });
 
-    (part1(disk) as i64, part2(dis) as i64)
+    (format!("{}", part1(disk)), format!("{}", part2(dis)))
 }

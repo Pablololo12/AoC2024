@@ -97,7 +97,7 @@ pub fn part1(map: &Vec<Vec<bool>>, pos_: (i32, i32)) -> i64 {
     visited.iter().map(|h| h.iter().sum::<u32>()).sum::<u32>() as i64
 }
 
-pub fn run(inp: Vec<String>) -> (i64, i64) {
+pub fn run(inp: Vec<String>) -> (String, String) {
     let map: Vec<Vec<bool>> = inp
         .iter()
         .map(|x| x.chars().map(|y| if y == '#' { true } else { false }).collect())
@@ -110,5 +110,5 @@ pub fn run(inp: Vec<String>) -> (i64, i64) {
             }
         }
     }
-    (part1(&map, pos), part2(map, pos))
+    (format!("{}", part1(&map, pos)), format!("{}", part2(map, pos)))
 }

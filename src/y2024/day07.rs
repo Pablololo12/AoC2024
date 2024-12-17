@@ -44,8 +44,9 @@ fn search_p1(acc: i64, inn: &[i64]) -> bool {
     sum_path || mul_path
 }
 
-pub fn run(inp: Vec<String>) -> (i64, i64) {
-    inp.into_par_iter()
+pub fn run(inp: Vec<String>) -> (String, String) {
+    let (p1, p2) = inp
+        .into_par_iter()
         .map(|y| {
             let mut kk = y.split(":");
             (
@@ -67,5 +68,6 @@ pub fn run(inp: Vec<String>) -> (i64, i64) {
                 (0, 0)
             }
         })
-        .reduce(|| (0, 0), |(a, b), (c, d)| (a + c, b + d))
+        .reduce(|| (0, 0), |(a, b), (c, d)| (a + c, b + d));
+    (format!("{}", p1), format!("{}", p2))
 }

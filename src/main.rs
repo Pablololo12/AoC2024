@@ -5,7 +5,7 @@ use argparse::{ArgumentParser, Store, StoreTrue};
 use helper::{get_example_input, get_input};
 use std::time::Instant;
 
-fn run(which: i32, input: Vec<String>, easter: bool) -> (i64, i64) {
+fn run(which: i32, input: Vec<String>, easter: bool) -> (String, String) {
     let now = Instant::now();
     let (first, second) = match which {
         1 => y2024::day01::run(input),
@@ -25,19 +25,11 @@ fn run(which: i32, input: Vec<String>, easter: bool) -> (i64, i64) {
         15 => y2024::day15::run(input, easter),
         16 => y2024::day16::run(input, easter),
         17 => y2024::day17::run(input),
-        18 => todo!(),
-        19 => todo!(),
-        20 => todo!(),
-        21 => todo!(),
-        22 => todo!(),
-        23 => todo!(),
-        24 => todo!(),
-        25 => todo!(),
-        _ => (0, 0),
+        _ => ("NOO".to_string(), "NOO".to_string()),
     };
     let elapsed = now.elapsed();
     println!(
-        "Day {} first solution: {}, second solution {} in {:.2?}",
+        "Day {:02} first solution: {}, second solution {} in {:.2?}",
         which, first, second, elapsed
     );
     (first, second)

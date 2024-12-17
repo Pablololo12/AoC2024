@@ -25,7 +25,7 @@ pub fn part2(d1: &Vec<i64>, d2: &Vec<i64>) -> i64 {
         .sum()
 }
 
-pub fn run(inp: Vec<String>) -> (i64, i64) {
+pub fn run(inp: Vec<String>) -> (String, String) {
     let (d1, d2) = get_vectors(&inp);
-    (part1(&d1, &d2), part2(&d1, &d2))
+    (format!("{}", part1(&d1, &d2)), format!("{}", part2(&d1, &d2)))
 }

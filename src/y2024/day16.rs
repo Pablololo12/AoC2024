@@ -128,7 +128,7 @@ fn magic(mapa: &Vec<Coordinate<i32>>, end: Coordinate<i32>, pos: Coordinate<i32>
     (mini, uniques.len() as i64 + 1)
 }
 
-pub fn run(inp: Vec<String>, easter: bool) -> (i64, i64) {
+pub fn run(inp: Vec<String>, easter: bool) -> (String, String) {
     let mut mapa: Vec<Coordinate<i32>> = vec![];
     let mut start: Coordinate<i32> = Coordinate { x: 0, y: 0 };
     let mut end: Coordinate<i32> = Coordinate { x: 0, y: 0 };
@@ -152,5 +152,6 @@ pub fn run(inp: Vec<String>, easter: bool) -> (i64, i64) {
             }
         });
     });
-    magic(&mapa, end, start, easter)
+    let (p1, p2) = magic(&mapa, end, start, easter);
+    (format!("{}", p1), format!("{}", p2))
 }

@@ -76,7 +76,7 @@ fn part2(mapa: &HashMap<Coordinate<i32>, char>) -> u32 {
         .sum()
 }
 
-pub fn run(inp: Vec<String>) -> (i64, i64) {
+pub fn run(inp: Vec<String>) -> (String, String) {
     let mapa: HashMap<Coordinate<i32>, char> = inp
         .iter()
         .enumerate()
@@ -94,5 +94,5 @@ pub fn run(inp: Vec<String>) -> (i64, i64) {
         .fold(0, |acc, (f, ff)| acc + (f * ff) as u64);
 
     let p2 = part2(&mapa);
-    (p1 as i64, p2 as i64)
+    (format!("{}", p1), format!("{}", p2))
 }
