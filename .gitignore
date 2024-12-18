@@ -1,3 +1,4 @@
 /target
 .cookie
 Cargo.lock
+.DS_Store
