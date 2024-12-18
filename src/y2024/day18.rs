@@ -1,5 +1,4 @@
 use aoc24::Coordinate;
-use rayon::iter::{IntoParallelIterator, ParallelIterator};
 
 use std::collections::{BTreeSet, HashSet};
 
@@ -26,10 +25,9 @@ fn astar(obstacles: &Vec<Coordinate<i64>>) -> i64 {
             .iter()
             .map(|w| *w + pos)
             .filter(|w| !obstacles.contains(w) && !w.out_of_bounds(SIZE + 1))
+            .filter(|w| visited.insert(*w))
             .for_each(|w| {
-                if visited.insert(w) {
-                    open.insert((sc + 1, w));
-                }
+                open.insert((sc + 1, w));
             });
     }
 
@@ -50,14 +48,21 @@ pub fn run(inp: Vec<String>) -> (String, String) {
     let inp: Vec<Coordinate<i64>> = list.iter().take(SIM).map(|w| *w).collect();
     let p1 = astar(&inp);
 
-    let first = (SIM..list.len())
-        .into_par_iter()
-        .find_first(|i| {
-            let inp: Vec<Coordinate<i64>> = list.iter().take(*i).map(|w| *w).collect();
-            let p1 = astar(&inp);
-            p1 == -1
-        })
-        .unwrap();
-    let co = list.get(first - 1).unwrap();
+    let mut itt = SIM;
+    let mut upper = list.len();
+    loop {
+        let search = (upper + itt + 1) / 2;
+        let inp: Vec<Coordinate<i64>> = list.iter().take(search).map(|w| *w).collect();
+        let p1 = astar(&inp);
+        if p1 == -1 && itt == upper - 1 {
+            break;
+        }
+        if p1 == -1 {
+            upper = search;
+        } else {
+            itt = search;
+        }
+    }
+    let co = list.get(itt).unwrap();
     (format!("{}", p1), format!("{},{}", co.y, co.x))
 }
