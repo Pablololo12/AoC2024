@@ -25,7 +25,7 @@ fn run(which: i32, input: Vec<String>, easter: bool) -> (String, String) {
         15 => y2024::day15::run(input, easter),
         16 => y2024::day16::run(input, easter),
         17 => y2024::day17::run(input),
-        18 => y2024::day18::run(input, easter),
+        18 => y2024::day18::run(input),
         _ => ("NOO".to_string(), "NOO".to_string()),
     };
     let elapsed = now.elapsed();
