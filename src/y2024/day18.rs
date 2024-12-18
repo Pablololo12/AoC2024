@@ -9,7 +9,7 @@ const DOWN: Coordinate<i64> = Coordinate { x: 1, y: 0 };
 const LEFT: Coordinate<i64> = Coordinate { x: 0, y: -1 };
 const RIGHT: Coordinate<i64> = Coordinate { x: 0, y: 1 };
 
-fn astar(obstacles: &Vec<Coordinate<i64>>) -> i64 {
+fn astar(obstacles: &[Coordinate<i64>]) -> i64 {
     let mut open: BTreeSet<(i64, Coordinate<i64>)> = BTreeSet::new();
     let mut visited: HashSet<Coordinate<i64>> = HashSet::new();
     let end = Coordinate { x: SIZE, y: SIZE };
@@ -45,15 +45,13 @@ pub fn run(inp: Vec<String>) -> (String, String) {
             }
         })
         .collect();
-    let inp: Vec<Coordinate<i64>> = list.iter().take(SIM).map(|w| *w).collect();
-    let p1 = astar(&inp);
+    let p1 = astar(&list[0..SIM]);
 
     let mut itt = SIM;
     let mut upper = list.len();
     loop {
         let search = (upper + itt + 1) / 2;
-        let inp: Vec<Coordinate<i64>> = list.iter().take(search).map(|w| *w).collect();
-        let p1 = astar(&inp);
+        let p1 = astar(&list[0..search]);
         if p1 == -1 && itt == upper - 1 {
             break;
         }
