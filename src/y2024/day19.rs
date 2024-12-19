@@ -2,20 +2,18 @@ use rustc_hash::FxHashMap;
 use trie_rs::{Trie, TrieBuilder};
 
 fn recursive(trie: &Trie<u8>, towel: &str, cache: &mut FxHashMap<String, usize>) -> usize {
-    if towel.is_empty() {
-        return 1;
+    match cache.get(towel) {
+        Some(c) => *c,
+        _ if towel.is_empty() => 1,
+        _ => {
+            let sum = trie
+                .common_prefix_search(towel)
+                .map(|w: Vec<u8>| recursive(trie, &towel[w.len()..], cache))
+                .sum();
+            cache.insert(towel.to_string(), sum);
+            sum
+        }
     }
-
-    if let Some(c) = cache.get(towel) {
-        return *c;
-    }
-
-    let sum = trie
-        .common_prefix_search(towel)
-        .map(|w: Vec<u8>| recursive(trie, &towel[w.len()..], cache))
-        .sum();
-    cache.insert(towel.to_string(), sum);
-    sum
 }
 
 pub fn run(inp: Vec<String>) -> (String, String) {
@@ -25,17 +23,13 @@ pub fn run(inp: Vec<String>) -> (String, String) {
     });
     let trie = builder.build();
 
-    let towels = &inp[2..];
-
-    let mut p1 = 0;
-    let mut p2 = 0;
     let mut cache: FxHashMap<String, usize> = FxHashMap::default();
-    for t in towels {
-        let count = recursive(&trie, t, &mut cache);
-        if count > 0 {
-            p1 += 1;
-            p2 += count;
-        }
-    }
+    let (p1, p2): (usize, usize) = inp[2..]
+        .iter()
+        .map(|t| match recursive(&trie, t, &mut cache) {
+            0 => (0usize, 0),
+            d => (1usize, d),
+        })
+        .fold((0, 0), |(a, aa), (pp1, pp2)| (a + pp1, aa + pp2));
     (format!("{p1}"), format!("{p2}"))
 }
