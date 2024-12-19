@@ -1,7 +1,5 @@
-use std::{
-    collections::{BTreeSet, HashMap, HashSet},
-    i64::MAX,
-};
+use rustc_hash::{FxHashMap, FxHashSet};
+use std::{collections::BTreeSet, i64::MAX};
 
 use aoc24::Coordinate;
 
@@ -10,7 +8,7 @@ const DOWN: Coordinate<i32> = Coordinate { x: 1, y: 0 };
 const LEFT: Coordinate<i32> = Coordinate { x: 0, y: -1 };
 const RIGHT: Coordinate<i32> = Coordinate { x: 0, y: 1 };
 
-fn printt(mapa: &HashSet<Coordinate<i32>>) {
+fn printt(mapa: &FxHashSet<Coordinate<i32>>) {
     let maxx = mapa.iter().map(|w| w.x).max().unwrap();
     let maxy = mapa.iter().map(|w| w.y).max().unwrap();
 
@@ -27,9 +25,9 @@ fn printt(mapa: &HashSet<Coordinate<i32>>) {
 }
 
 fn magic_rec(
-    scores: &HashMap<Coordinate<i32>, HashMap<Coordinate<i32>, i64>>,
+    scores: &FxHashMap<Coordinate<i32>, FxHashMap<Coordinate<i32>, i64>>,
     pathh: Vec<Coordinate<i32>>,
-    uniques: &mut HashSet<Coordinate<i32>>,
+    uniques: &mut FxHashSet<Coordinate<i32>>,
     pos: Coordinate<i32>,
     end: Coordinate<i32>,
     acc: i64,
@@ -75,9 +73,9 @@ fn get_opposite(d1: Coordinate<i32>) -> Coordinate<i32> {
 fn magic(mapa: &Vec<Coordinate<i32>>, end: Coordinate<i32>, pos: Coordinate<i32>, easter: bool) -> (i64, i64) {
     //let mut open: Vec<(Coordinate<i32>, Coordinate<i32>, i64)> = Vec::new();
     let mut open: BTreeSet<(i64, Coordinate<i32>, Coordinate<i32>)> = BTreeSet::new();
-    let mut scores: HashMap<Coordinate<i32>, HashMap<Coordinate<i32>, i64>> = HashMap::new();
+    let mut scores: FxHashMap<Coordinate<i32>, FxHashMap<Coordinate<i32>, i64>> = FxHashMap::default();
     mapa.iter().for_each(|w| {
-        let ma: HashMap<Coordinate<i32>, i64> = HashMap::new();
+        let ma: FxHashMap<Coordinate<i32>, i64> = FxHashMap::default();
         scores.insert(*w, ma);
     });
     open.insert((0, pos, RIGHT));
@@ -120,7 +118,7 @@ fn magic(mapa: &Vec<Coordinate<i32>>, end: Coordinate<i32>, pos: Coordinate<i32>
                 }
             });
     }
-    let mut uniques: HashSet<Coordinate<i32>> = HashSet::new();
+    let mut uniques: FxHashSet<Coordinate<i32>> = FxHashSet::default();
     magic_rec(&scores, vec![], &mut uniques, pos, end, 0, mini);
     if easter {
         printt(&uniques);

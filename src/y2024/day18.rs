@@ -1,6 +1,7 @@
 use aoc24::Coordinate;
 
-use std::collections::{BTreeSet, HashSet};
+use rustc_hash::FxHashSet;
+use std::collections::BTreeSet;
 
 const SIZE: i64 = 70;
 const SIM: usize = 1024;
@@ -11,7 +12,7 @@ const RIGHT: Coordinate<i64> = Coordinate { x: 0, y: 1 };
 
 fn astar(obstacles: &[Coordinate<i64>]) -> i64 {
     let mut open: BTreeSet<(i64, Coordinate<i64>)> = BTreeSet::new();
-    let mut visited: HashSet<Coordinate<i64>> = HashSet::new();
+    let mut visited: FxHashSet<Coordinate<i64>> = FxHashSet::default();
     let end = Coordinate { x: SIZE, y: SIZE };
     open.insert((0, Coordinate { x: 0, y: 0 }));
     let mut tot = -1;
