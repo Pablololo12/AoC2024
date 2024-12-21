@@ -3,9 +3,9 @@ name = "aoc24"
 version = "0.1.0"
 edition = "2021"
 
-[profile.release]
-lto = "thin"
-codegen-units = 1
+#[profile.release]
+#lto = "thin"
+#codegen-units = 1
 
 [build]
 rustflags = ["-C", "target-cpu=native"]
