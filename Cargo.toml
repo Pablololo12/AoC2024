@@ -3,10 +3,6 @@ name = "aoc24"
 version = "0.1.0"
 edition = "2021"
 
-#[profile.release]
-#lto = "thin"
-#codegen-units = 1
-
 [dependencies]
 reqwest = {version = "0.12.9", features=["cookies", "blocking"]}
 scraper = "0.21.0"
@@ -17,3 +13,4 @@ cached = "0.54.0"
 itertools = "0.13.0"
 rustc-hash = "2.1.0"
 trie-rs = "0.4.2"
+num-traits = "0.2"

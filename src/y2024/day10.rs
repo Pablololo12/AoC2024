@@ -2,7 +2,7 @@ use std::collections::VecDeque;
 
 use aoc24::Coordinate;
 
-fn part1(start: Coordinate<usize>, map: &Vec<Vec<u8>>) -> u32 {
+fn part1(start: Coordinate<usize>, map: &Vec<Vec<i32>>) -> u32 {
     let max = map.len();
     let vertical = Coordinate::new(1, 0);
     let horizontal = Coordinate::new(0, 1);
@@ -41,7 +41,7 @@ fn part1(start: Coordinate<usize>, map: &Vec<Vec<u8>>) -> u32 {
     count
 }
 
-fn part2(start: Coordinate<usize>, mapa: &Vec<Vec<u8>>) -> u32 {
+fn part2(start: Coordinate<usize>, mapa: &Vec<Vec<i32>>) -> u32 {
     let max = mapa.len();
     let vertical = Coordinate::new(1, 0);
     let horizontal = Coordinate::new(0, 1);
@@ -76,14 +76,14 @@ fn part2(start: Coordinate<usize>, mapa: &Vec<Vec<u8>>) -> u32 {
 
 pub fn run(inp: Vec<String>) -> (String, String) {
     let mut head: Vec<Coordinate<usize>> = vec![];
-    let map: Vec<Vec<u8>> = inp
+    let map: Vec<Vec<i32>> = inp
         .iter()
         .enumerate()
         .map(|(i, f)| {
             f.chars()
                 .enumerate()
                 .map(|(j, c)| {
-                    let n = c.to_digit(10).unwrap() as u8;
+                    let n = c.to_digit(10).unwrap() as i32;
                     if n == 0 {
                         head.push(Coordinate::new(i, j));
                     }

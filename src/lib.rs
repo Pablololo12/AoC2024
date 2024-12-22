@@ -1,3 +1,4 @@
+use num_traits::WrappingSub;
 use std::cmp::Ordering;
 use std::ops::{Add, Sub};
 
@@ -45,12 +46,12 @@ impl<T: Add<Output = T>> Add for Coordinate<T> {
     }
 }
 
-impl<T: Sub<Output = T>> Sub for Coordinate<T> {
+impl<T: Sub<Output = T> + WrappingSub<Output = T>> Sub for Coordinate<T> {
     type Output = Self;
     fn sub(self, other: Self) -> Self::Output {
         Self {
-            x: self.x - other.x,
-            y: self.y - other.y,
+            x: self.x.wrapping_sub(&other.x),
+            y: self.y.wrapping_sub(&other.y),
         }
     }
 }
